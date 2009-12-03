@@ -2,6 +2,8 @@
 #define MSGPACK_LUA_BUFFER_HPP_
 
 #include <vector>
+#include <lua.hpp>
+#include <msgpack.hpp>
 
 namespace msgpack {
 namespace lua {
@@ -28,7 +30,7 @@ public:
   /**
    * @return The number of return values
    */
-  virtual int returnValue(lua_State* L) = 0;
+  virtual int returnValues(lua_State* L) = 0;
 };
 
 /**
@@ -41,7 +43,7 @@ public:
 
   virtual void initPacker(Packer* p, msgpack_packer* packer);
   virtual int initUpvalues(lua_State* L);
-  virtual int returnValue(lua_State* L);
+  virtual int returnValues(lua_State* L);
 
 private:
   static int callback(void* data, const char* buf, unsigned int len);
@@ -61,7 +63,7 @@ public:
 
   virtual void initPacker(Packer* p, msgpack_packer* packer);
   virtual int initUpvalues(lua_State* L);
-  virtual int returnValue(lua_State* L);
+  virtual int returnValues(lua_State* L);
 
 private:
   static int callback(void* data, const char* buf, unsigned int len);

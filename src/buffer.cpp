@@ -24,7 +24,7 @@ int DirectBuffer::initUpvalues(lua_State* L) {
   return 0;
 }
 
-int DirectBuffer::returnValue(lua_State* L) {
+int DirectBuffer::returnValues(lua_State* L) {
   // TODO: return this->retval as string
   retval.clear();
   return 1;
@@ -54,7 +54,7 @@ int LuaBuffer::initUpvalues(lua_State* L) {
   return 1;
 }
 
-int LuaBuffer::returnValue(lua_State* L) {
+int LuaBuffer::returnValues(lua_State* L) {
   // no return value
   return 0;
 }
