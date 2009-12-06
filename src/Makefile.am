@@ -5,7 +5,9 @@ msgpack_la_SOURCES = \
   packer.hpp \
   packer.cpp \
   buffer.hpp \
-  buffer.cpp
+  buffer.cpp \
+  unpacker.hpp \
+  unpacker.cpp
 msgpack_la_CXXFLAGS = \
   $(LUA_CFLAGS)
 msgpack_la_LIBADD = \
