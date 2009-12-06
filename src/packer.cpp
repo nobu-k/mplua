@@ -155,7 +155,8 @@ void Packer::packTableAsTable(lua_State* L, int index) {
 void Packer::packTableAsArray(lua_State* L, int index) {
   int n = lua_gettop(L);
   size_t len = lua_objlen(L, index);
-  
+
+  msgpack_pack_array(&packer_, len);
   for (size_t i = 1; i <= len; i++) {
     lua_rawgeti(L, index, i);
     pack(L, n + 1);
