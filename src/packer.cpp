@@ -16,7 +16,7 @@ int packerProxy(lua_State* L) {
 }
 } // namespace
 
-const char* const Packer::MetatableName = "MpLua.Packer";
+const char* const Packer::MetatableName = "msgpack.Packer";
 
 void Packer::registerUserdata(lua_State* L) {
   luaL_newmetatable(L, msgpack::lua::Packer::MetatableName);
