@@ -9,7 +9,7 @@ mplua_la_SOURCES = \
 mplua_la_CXXFLAGS = \
   $(LUA_CFLAGS)
 mplua_la_LIBADD = \
-  $(LUA_LIBS)
+  $(LUA_LIBS) -lmsgpack
 
 # Because mplua.la does not start with "lib", module option is necessary.
 mplua_la_LDFLAGS = \
