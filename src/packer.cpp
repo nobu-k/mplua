@@ -177,9 +177,11 @@ void Packer::packTable(lua_State* L, int index) {
 
   bool isArray = false;
   size_t len = lua_objlen(L, index);
-  lua_pushnumber(L, len);
-  if (lua_next(L, index) == 0) isArray = true;
-  else lua_pop(L, 2);
+  if (len > 0) {
+    lua_pushnumber(L, len);
+    if (lua_next(L, index) == 0) isArray = true;
+    else lua_pop(L, 2);
+  }
 
   if (isArray) packTableAsArray(L, index);
   else packTableAsTable(L, index);
