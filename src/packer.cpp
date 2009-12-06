@@ -33,7 +33,8 @@ void Packer::registerUserdata(lua_State* L) {
   const struct luaL_Reg Methods[] = {
     {"pack", &packerProxy<&Packer::pack>},
     {"packTable", &packerProxy<&Packer::packTable>},
-    {"packArray", &packerProxy<&Packer::packArray>}
+    {"packArray", &packerProxy<&Packer::packArray>},
+    {NULL, NULL}
   };
   luaL_register(L, NULL, Methods);
   lua_pop(L, 1);
