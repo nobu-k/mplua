@@ -19,7 +19,7 @@ int packerProxy(lua_State* L) {
 const char* const Packer::MetatableName = "msgpack.Packer";
 
 void Packer::registerUserdata(lua_State* L) {
-  luaL_newmetatable(L, msgpack::lua::Packer::MetatableName);
+  luaL_newmetatable(L, Packer::MetatableName);
 
   // metatable.__index = metatable
   lua_pushvalue(L, -1);
