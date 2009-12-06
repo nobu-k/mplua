@@ -25,15 +25,15 @@ int DirectBuffer::initUpvalues(lua_State* L) {
 }
 
 int DirectBuffer::returnValues(lua_State* L) {
-  lua_pushlstring(L, &retval[0], retval.size());
-  retval.clear();
+  lua_pushlstring(L, &retval_[0], retval_.size());
+  retval_.clear();
   return 1;
 }
 
 int DirectBuffer::callback(void* data, const char* buf, unsigned int len) {
   Packer* packer = static_cast<Packer*>(data);
   DirectBuffer* buffer = static_cast<DirectBuffer*>(packer->buffer());
-  buffer->retval.insert(buffer->retval.end(), buf, buf + len);
+  buffer->retval_.insert(buffer->retval_.end(), buf, buf + len);
   return 0;
 }
 

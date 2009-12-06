@@ -49,7 +49,7 @@ private:
   static int callback(void* data, const char* buf, unsigned int len);
   
 private:
-  std::vector<char> retval;
+  std::vector<char> retval_;
 };
 
 /**
