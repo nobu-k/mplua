@@ -15,11 +15,19 @@ class Buffer;
  */
 class Packer {
 private:
+  Packer(Buffer* buf);
   Packer(const Packer&);
   Packer& operator =(const Packer&);
 
 public:
-  Packer(Buffer* buf);
+  static const char* const MetatableName;
+  static void registerUserdata(lua_State* L);
+  static int create(lua_State* L);
+
+private:
+  static int finalizer(lua_State* L);
+
+public:
   ~Packer();
 
   /**

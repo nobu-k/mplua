@@ -1,13 +1,64 @@
 #include "packer.hpp"
 
+#include <cassert>
 #include "buffer.hpp"
 
 // TODO: check error codes of msgpack
 
 namespace msgpack {
 namespace lua {
+namespace {
+template<int (Packer::*Memfun)(lua_State*)>
+int packerProxy(lua_State* L) {
+  Packer* p =
+    *static_cast<Packer**>(luaL_checkudata(L, 1, Packer::MetatableName));
+  return (p->*Memfun)(L);
+}
+} // namespace
+
+const char* const Packer::MetatableName = "MpLua.Packer";
+
+void Packer::registerUserdata(lua_State* L) {
+  luaL_newmetatable(L, msgpack::lua::Packer::MetatableName);
+
+  // metatable.__index = metatable
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -2, "__index");
+
+  // set __gc
+  lua_pushcfunction(L, &Packer::finalizer);
+  lua_setfield(L, -2, "__gc");
+
+  // register methods
+  const struct luaL_Reg Methods[] = {
+    {"pack", &packerProxy<&Packer::pack>},
+    {"packTable", &packerProxy<&Packer::packTable>},
+    {"packArray", &packerProxy<&Packer::packArray>}
+  };
+  luaL_register(L, NULL, Methods);
+  lua_pop(L, 1);
+}
+
+int Packer::create(lua_State* L) {
+  // TODO: check the argument of constructor
+  // TODO: Create LuaBuffer if stack[1] == function
+
+  Packer** p = static_cast<Packer**>(lua_newuserdata(L, sizeof(Packer*)));
+  luaL_getmetatable(L, Packer::MetatableName);
+  lua_setmetatable(L, -2);
+  *p = new Packer(new DirectBuffer());
+  return 1;
+}
+
+int Packer::finalizer(lua_State* L) {
+  Packer* p =
+    *static_cast<Packer**>(luaL_checkudata(L, 1, Packer::MetatableName));
+  delete p;
+  return 0;
+}
 
 Packer::Packer(Buffer* buf) : buffer_(buf), tmp_lua_state_(NULL) {
+  assert(buf != NULL);
   buffer_->initPacker(this, &packer_);
 }
 
