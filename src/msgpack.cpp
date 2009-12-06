@@ -1,6 +1,7 @@
 #include <lua.hpp>
 
 #include "packer.hpp"
+#include "unpacker.hpp"
 
 namespace msgpack {
 namespace lua {
@@ -18,13 +19,13 @@ int createPacker(lua_State* L) {
 
 /**
  * class Unpacker {
- *   closure execute()
  *   feed()
+ *   next()
+ *   operator () -- equals to next()
  * }
  */
 int createUnpacker(lua_State* L) {
-  // TODO: implement
-  return 0;
+  return Unpacker::create(L);
 }
 
 namespace {
@@ -45,6 +46,7 @@ extern "C" {
    */
   int luaopen_msgpack(lua_State* L) {
     msgpack::lua::Packer::registerUserdata(L);
+    msgpack::lua::Unpacker::registerUserdata(L);
     luaL_register(L, msgpack::lua::MpLuaPkgName, msgpack::lua::MpLuaLib);
     return 1;
   }

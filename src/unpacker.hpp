@@ -35,14 +35,17 @@ public:
   int feed(lua_State* L);
 
   /**
-   * @brief Get deserialized data if exists
+   * @brief Get deserialized objects if exist
+   *
+   * @return When there is a deserialized object, this function returns it.
+   * Otherwise, returns nil.
    *
    * @note this function can be call in two ways:
-   *       unpacker.data() or unpacker().
+   * unpacker.data() or unpacker().
    *
    * memo:
    * Currently, Unpacker only support manual feeding by calling feed function.
-   * Feeding from user defined function should be supported. 
+   * Feeding from user defined function should also be supported. 
    *
    * example code:
    * p = msgpack.Unpacker([feeder1])
@@ -53,12 +56,37 @@ public:
    * There can be three type of feeding functions:
    *
    * 1. funciton f (unpacker) unpacker.feed("data") end
-   * 2. function f () return "data" end
+   * 2. function f () return "data" end --> feed "data"
    * 3. function f (unpacker) unpacker.feed("data1"); return "data2" end
+   *      --> feed "data2"
    *
    * 3 may be good. Every function returns nil when no more feed exists.
    */
-  int data(lua_State* L);
+  int next(lua_State* L);
+
+  /**
+   * @brief deserialize objects and pass them to the given function.
+   *
+   * @pre
+   * Usage:
+   * p = msgpack.Unpacker()
+   * -- feed data
+   * p:each(function (object)
+   *   -- process deserialized object here
+   * end)
+   */
+  int each(lua_State* L);
+
+private:
+  /**
+   * @return The number of return values.
+   */
+  int unpack(lua_State* L, const msgpack::object& msg);
+  int unpackArray(lua_State* L, const msgpack::object_array& a);
+  int unpackTable(lua_State* L, const msgpack::object_map& m);
+
+private:
+  msgpack::unpacker unpacker_;
 };
 
 } // namespace lua
