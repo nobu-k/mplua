@@ -13,6 +13,12 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_LIBTOOL
 
+# Expand prefix
+expanded_prefix=$prefix
+if test "x$prefix" = xNONE; then
+  expanded_prefix=${ac_default_prefix}
+fi
+
 # Checks for compiler version
 if $CC --version >/dev/null 2>/dev/null; then
   ax_prog_cc_version=`$CC --version | head -n 1`
@@ -36,21 +42,20 @@ AC_ARG_WITH([lua],
   [lua_pkg_name="$withval"],
   [lua_pkg_name="lua"])
 
-if $PKG_CONFIG $lua_pkg_name --exists; then
-  LUA_CFLAGS=`$PKG_CONFIG $lua_pkg_name --cflags`
-  LUA_LIBS=`$PKG_CONFIG $lua_pkg_name --libs`
-else
+if ! $PKG_CONFIG $lua_pkg_name --exists; then
   lua_pkg_name="lua5.1"
-  if $PKG_CONFIG $lua_pkg_name --exists; then
-    LUA_CFLAGS=`$PKG_CONFIG $lua_pkg_name --cflags`
-    LUA_LIBS=`$PKG_CONFIG $lua_pkg_name --libs`
-  else
+  if ! $PKG_CONFIG $lua_pkg_name --exists; then
     AC_MSG_ERROR([Lua not found. Please install Lua or use --with-lua.])
   fi
 fi
 
+LUA_CFLAGS=`$PKG_CONFIG $lua_pkg_name --cflags`
+LUA_LIBS=`$PKG_CONFIG $lua_pkg_name --libs`
+LUA_CMOD_DIR=`$PKG_CONFIG $lua_pkg_name --define-variable=prefix=${expanded_prefix} --variable=INSTALL_CMOD`
+
 AC_SUBST(LUA_CFLAGS)
 AC_SUBST(LUA_LIBS)
+AC_SUBST(LUA_CMOD_DIR)
 
 # Checks for libraries.
 
@@ -76,7 +81,8 @@ AC_OUTPUT
 
 AC_MSG_RESULT([[
 [Modules]
-Lua: $lua_pkg_name]])
+Lua: $lua_pkg_name
+Lua C Module dir: $LUA_CMOD_DIR]])
 
 AC_MSG_RESULT([[
 [Build information]

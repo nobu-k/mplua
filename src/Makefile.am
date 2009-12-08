@@ -1,4 +1,6 @@
-lib_LTLIBRARIES = msgpack.la
+pkglibdir = $(LUA_CMOD_DIR)
+
+pkglib_LTLIBRARIES = msgpack.la
 
 msgpack_la_SOURCES = \
   msgpack.cpp \
