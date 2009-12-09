@@ -95,13 +95,11 @@ int Unpacker::next(lua_State* L) {
       // TODO: call the feeding function passed to constructor
 
       // FIXME: currently, this function simply returns
-      lua_pushnil(L);
-      return 1;
+      return 0;
     }
 
   } catch (const msgpack::unpack_error& e) {
-    // TODO: raise an error: deserialization failed
-    return 0;
+    return luaL_error(L, "deserialization failed: %s", e.what());
   }
 
   msgpack::object msg = unpacker_.data();
@@ -116,54 +114,45 @@ int Unpacker::each(lua_State* L) {
 }
 
 int Unpacker::unpack(lua_State* L, const msgpack::object& msg) {
-  try {
-    namespace type = msgpack::type;
-    switch (msg.type) {
-    case type::BOOLEAN:
-      lua_pushboolean(L, msg.via.boolean);
-      return 1;
+  namespace type = msgpack::type;
+  switch (msg.type) {
+  case type::BOOLEAN:
+    lua_pushboolean(L, msg.via.boolean);
+    return 1;
 
     // Lua internally uses double to represent integer. In addition,
     // lua_Integer is the alias of ptrdiff_t, which can be 32 bits.
     // Therefore, pushing (u)int64_t as double is the best way.
-    case type::POSITIVE_INTEGER:
-      lua_pushnumber(L, msg.via.u64);
-      return 1;
+  case type::POSITIVE_INTEGER:
+    lua_pushnumber(L, msg.via.u64);
+    return 1;
 
-    case type::NEGATIVE_INTEGER:
-      lua_pushnumber(L, msg.via.i64);
-      return 1;
+  case type::NEGATIVE_INTEGER:
+    lua_pushnumber(L, msg.via.i64);
+    return 1;
 
-    case type::DOUBLE:
-      lua_pushnumber(L, msg.via.dec);
-      return 1;
+  case type::DOUBLE:
+    lua_pushnumber(L, msg.via.dec);
+    return 1;
 
-    case type::RAW:
-      lua_pushlstring(L, msg.via.raw.ptr, msg.via.raw.size);
-      return 1;
+  case type::RAW:
+    lua_pushlstring(L, msg.via.raw.ptr, msg.via.raw.size);
+    return 1;
 
-    case type::ARRAY: return unpackArray(L, msg.via.array);
-    case type::MAP: return unpackTable(L, msg.via.map);
-    case type::NIL:
-    default:
-      // TODO: raise an error
-      return 0;
-    }
-
-  } catch (const msgpack::type_error& e) {
-    // TODO: raise an error
-    return 0;
+  case type::ARRAY: return unpackArray(L, msg.via.array);
+  case type::MAP: return unpackTable(L, msg.via.map);
+  case type::NIL:
+  default:
+    return luaL_error(L, "invalid type for unpack: %d", msg.type);
   }
-  return 0;
 }
 
 int Unpacker::unpackArray(lua_State* L, const msgpack::object_array& a) {
   lua_newtable(L);
   for (uint32_t i = 0; i < a.size; i++) {
     if (unpack(L, a.ptr[i]) <= 0) {
-      // TODO: raise an error
       lua_pop(L, 1);
-      return 0;
+      return luaL_error(L, "failed to unpack %d-th element of the array: ", i);
     }
 
     lua_rawseti(L, -2, i + 1);
@@ -175,15 +164,13 @@ int Unpacker::unpackTable(lua_State* L, const msgpack::object_map& m) {
   lua_newtable(L);
   for (uint32_t i = 0; i < m.size; i++) {
     if (unpack(L, m.ptr[i].key) <= 0) {
-      // TODO: raise an error
       lua_pop(L, 1);
-      return 0;
+      return luaL_error(L, "failed to unpack %d-th key of the table: ", i);
     }
 
     if (unpack(L, m.ptr[i].val) <= 0) {
-      // TODO: raise an error
       lua_pop(L, 2);
-      return 0;
+      return luaL_error(L, "failed to unpack %d-th value of the table: ", i);
     }
 
     lua_rawset(L, -3);

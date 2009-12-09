@@ -89,8 +89,8 @@ int Packer::packTable(lua_State* L) {
       packTableAsTable(L, i);
 
     } else {
-      // TODO: raise an error: invalid type
-      return 0;
+      return luaL_error(L, "invalid type for packTable: %s",
+                        lua_typename(L, t));
     }
   }
 
@@ -108,8 +108,8 @@ int Packer::packArray(lua_State* L) {
       packTableAsArray(L, i);
 
     } else {
-      // TODO: raise an error: invalid type
-      return 0;
+      return luaL_error(L, "invalid type for packArray: %s",
+                        lua_typename(L, t));
     }
   }
 
@@ -130,7 +130,8 @@ void Packer::pack(lua_State* L, int index) {
   case LUA_TTHREAD:
   case LUA_TLIGHTUSERDATA:
   default:
-    // TODO: raise an error: invalid type
+    luaL_error(L, "invalid type for pack: %s",
+               lua_typename(L, t));
     break;
   }
 }
@@ -152,7 +153,9 @@ void Packer::packString(lua_State* L, int index) {
   size_t len;
   const char* str = lua_tolstring(L, index, &len);
   if (str == NULL) {
-    // TODO: raise an error
+    int t = lua_type(L, index);
+    luaL_error(L, "lua_tolstring failed for index %d: type = ",
+               index, lua_typename(L, t));
     return;
   }
 
@@ -226,7 +229,9 @@ void Packer::packUserdata(lua_State* L, int index) {
   // TODO: support userdata serialization.
   // Calling __serialize meta-method may be good.
 
-  // TODO: raise an error temporally
+  // raise an error temporally
+  luaL_error(L, "Packing userdata has not been supported yet. "
+             "However, it will be implemented soon.");
 }
 
 } // namespace lua
