@@ -96,14 +96,6 @@ public:
   int each(lua_State* L);
 
 private:
-  /**
-   * @return The number of return values.
-   */
-  int unpack(lua_State* L, const msgpack::object& msg);
-  int unpackArray(lua_State* L, const msgpack::object_array& a);
-  int unpackTable(lua_State* L, const msgpack::object_map& m);
-
-private:
   msgpack::unpacker unpacker_;
 };
 
