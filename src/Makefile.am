@@ -4,6 +4,8 @@ pkglib_LTLIBRARIES = msgpack.la
 
 msgpack_la_SOURCES = \
   msgpack.cpp \
+  lua_objects.hpp \
+  lua_objects.cpp \
   packer.hpp \
   packer.cpp \
   buffer.hpp \
