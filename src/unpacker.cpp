@@ -109,7 +109,8 @@ int Unpacker::feed(lua_State* L) {
 int Unpacker::next(lua_State* L) {
   // feed data until execute returns true
   try {
-    while (!unpacker_.execute()) {
+    msgpack::unpacked data;
+    while (!unpacker_.next(&data)) {
       // TODO: check the argument for feeding function and call it
       // TODO: call the feeding function passed to constructor
 
@@ -117,17 +118,14 @@ int Unpacker::next(lua_State* L) {
       return 0;
     }
 
+    msgpack::object msg = data.get();
+    LuaObjects res(L);
+    res.msgpack_unpack(msg);
+    return res.unpackedResults();
+
   } catch (const msgpack::unpack_error& e) {
     return luaL_error(L, "deserialization failed: %s", e.what());
   }
-
-  msgpack::object msg = unpacker_.data();
-  std::auto_ptr<msgpack::zone> zone(unpacker_.release_zone());
-  unpacker_.reset();
-
-  LuaObjects res(L);
-  res.msgpack_unpack(msg);
-  return res.unpackedResults();
 }
 
 int Unpacker::each(lua_State* L) {
