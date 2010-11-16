@@ -39,7 +39,7 @@ public:
   void msgpack_pack(Packer& pk) const {
     int n = lua_gettop(L);
     if (arg_base_ > n) {
-      pk.pack_array(0);
+      if (pack_as_array_) pk.pack_array(0);
       return;
     }
 
@@ -64,7 +64,8 @@ private:
     case LUA_TBOOLEAN: packBoolean(pk, index); break;
     case LUA_TSTRING:  packString(pk, index); break;
     case LUA_TTABLE: packTable(pk, index); break;
-    case LUA_TUSERDATA: packUserdata(pk, index); break;
+    case LUA_TUSERDATA:
+      // TODO: support userdata
 
     case LUA_TNIL:
     case LUA_TTHREAD:
