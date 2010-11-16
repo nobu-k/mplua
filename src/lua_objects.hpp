@@ -54,8 +54,6 @@ public:
 
   void msgpack_unpack(const msgpack::object& msg);
 
-  int unpackedResults() const { return 1; } // always returns 1 currently
-
 private:
   // TODO: merge these with mplua's implementation
   template<typename Packer>

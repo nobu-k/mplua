@@ -121,7 +121,7 @@ int Unpacker::next(lua_State* L) {
     msgpack::object msg = data.get();
     LuaObjects res(L);
     res.msgpack_unpack(msg);
-    return res.unpackedResults();
+    return 1;
 
   } catch (const msgpack::unpack_error& e) {
     return luaL_error(L, "deserialization failed: %s", e.what());
