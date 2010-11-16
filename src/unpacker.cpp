@@ -83,13 +83,17 @@ Unpacker::~Unpacker() {
 }
 
 int Unpacker::feed(lua_State* L) {
+  return feed(L, 2);
+}
+
+int Unpacker::feed(lua_State* L, int arg_base) {
   // TODO: check feeding function
   
   // check arguments first to avoid copying serialized data incompletely
   int n = lua_gettop(L);
   std::vector<std::pair<const char*, size_t> > strs;
   size_t total_size = 0;
-  for (int i = 2; i <= n; i++) {
+  for (int i = arg_base; i <= n; i++) {
     size_t len;
     const char* v = luaL_checklstring(L, i, &len);
     strs.push_back(std::make_pair(v, len));

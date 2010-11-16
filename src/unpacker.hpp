@@ -53,6 +53,11 @@ public:
   int feed(lua_State* L);
 
   /**
+   * @brief feed function with base index of the stack.
+   */
+  int feed(lua_State* L, int arg_base);
+
+  /**
    * @brief Get deserialized objects if exist
    *
    * @return When there is a deserialized object, this function returns it.

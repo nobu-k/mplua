@@ -89,8 +89,35 @@ int packArray(lua_State* L) {
   return 1;
 }
 
+/**
+ * @brief unpack function which is provided as a module function.
+ */
 int unpack(lua_State* L) {
-  
+  Unpacker upk;
+  upk.feed(L, 1); // calling without Unpacker userdata
+
+  int res;
+  for (res = 0; upk.next(L); res++) {
+    // TODO: check stack size
+  }
+  return res;
+}
+
+/**
+ * @brief unpack function which is provided as a module function.
+ *
+ * This function returns multiple results as an array to overcome the
+ * limitation of Lua's stack size.
+ */
+int unpackToArray(lua_State* L) {
+  Unpacker upk;
+  upk.feed(L, 1);
+
+  lua_newtable(L);
+  for (int i = 1; upk.next(L); i++) {
+    lua_rawseti(L, -2, i);
+  }
+  return 1;
 }
 
 const char* const MpLuaPkgName = "msgpack";
@@ -100,6 +127,8 @@ const struct luaL_Reg MpLuaLib[] = {
   {"packTable", &packTable},
   {"packArray", &packArray},
   {"Unpacker", &createUnpacker},
+  {"unpack", &unpack},
+  {"unpackToArray", &unpackToArray},
   {NULL, NULL}
 };
 } // namespace
