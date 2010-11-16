@@ -95,7 +95,7 @@ private:
   void packTableAsArray(lua_State* L, int index);
   void packTableAsClass(lua_State* L, int index);
   void packUserdata(lua_State* L, int index);
-  
+
 private:
   msgpack_packer packer_;
   Buffer* buffer_;
