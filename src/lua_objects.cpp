@@ -1,5 +1,5 @@
 /*
- * MessagePack-RPC for Lua
+ * MessagePack for Lua
  *
  * Copyright (C) 2010 Nobuyuki Kubota
  *
