@@ -8,8 +8,8 @@ msgpack_la_SOURCES = \
   lua_objects.cpp \
   packer.hpp \
   packer.cpp \
-  buffer.hpp \
-  buffer.cpp \
+  packer_impl.hpp \
+  packer_impl.cpp \
   unpacker.hpp \
   unpacker.cpp
 msgpack_la_CXXFLAGS = \

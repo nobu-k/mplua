@@ -25,7 +25,7 @@
 namespace msgpack {
 namespace lua {
 
-class Buffer;
+class PackerImpl;
 
 /**
  * Metatable for this class:
@@ -45,7 +45,7 @@ private:
   static int finalizer(lua_State* L);
 
 public:
-  Packer(Buffer* buf);
+  Packer(PackerImpl* buf);
   ~Packer();
 
   /**
@@ -81,26 +81,11 @@ public:
    */
   int packArray(lua_State* L);
 
-  Buffer* buffer() { return buffer_; }
-  const Buffer* buffer() const { return buffer_; }
-  lua_State* state() { return tmp_lua_state_; }
+  PackerImpl* packer() { return packer_; }
+  const PackerImpl* packer() const { return packer_; }
 
 private:
-  void pack(lua_State* L, int index);
-  void packNumber(lua_State* L, int index);
-  void packBoolean(lua_State* L, int index);
-  void packString(lua_State* L, int index);
-  void packTable(lua_State* L, int index);
-  void packTableAsTable(lua_State* L, int index);
-  void packTableAsArray(lua_State* L, int index);
-  void packTableAsClass(lua_State* L, int index);
-  void packUserdata(lua_State* L, int index);
-
-private:
-  msgpack_packer packer_;
-  Buffer* buffer_;
-
-  lua_State* tmp_lua_state_;
+  PackerImpl* packer_;
 };
 
 } // namespace lua

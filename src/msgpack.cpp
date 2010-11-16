@@ -20,6 +20,7 @@
 
 #include "lua_objects.hpp"
 #include "packer.hpp"
+#include "packer_impl.hpp"
 #include "unpacker.hpp"
 
 namespace msgpack {
@@ -54,39 +55,21 @@ namespace {
  * @brief pack function which is provided as a module function.
  */
 int pack(lua_State* L) {
-  sbuffer buffer;
-  packer<sbuffer> pk(&buffer);
-  LuaObjects obj(L, 1);
-
-  obj.msgpack_pack(pk);
-  lua_pushlstring(L, buffer.data(), buffer.size());
-  return 1;
+  return DirectPackerImpl().pack(L, 1);
 }
 
 /**
  * @brief packTable function which is provided as a module function.
  */
 int packTable(lua_State* L) {
-  sbuffer buffer;
-  packer<sbuffer> pk(&buffer);
-  LuaObjects obj(L, 1);
-
-  obj.packTable(pk);
-  lua_pushlstring(L, buffer.data(), buffer.size());
-  return 1;
+  return DirectPackerImpl().packTable(L, 1);
 }
 
 /**
  * @brief packArray function which is provided as a module function.
  */
 int packArray(lua_State* L) {
-  sbuffer buffer;
-  packer<sbuffer> pk(&buffer);
-  LuaObjects obj(L, 1);
-
-  obj.packArray(pk);
-  lua_pushlstring(L, buffer.data(), buffer.size());
-  return 1;
+  return DirectPackerImpl().packArray(L, 1);
 }
 
 /**

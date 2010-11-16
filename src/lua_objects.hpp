@@ -91,7 +91,13 @@ private:
     case LUA_TSTRING:  packString(pk, index); break;
     case LUA_TTABLE: packTable(pk, index); break;
     case LUA_TUSERDATA:
-      // TODO: support userdata
+      // TODO: support userdata serialization.
+      // Calling __serialize meta-method may be good.
+
+      // raise an error temporally
+      luaL_error(L, "Packing userdata has not been supported yet. "
+                 "However, it will be implemented soon.");
+      return;
 
     case LUA_TNIL:
     case LUA_TTHREAD:
