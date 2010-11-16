@@ -33,7 +33,6 @@ class Buffer;
  */
 class Packer {
 private:
-  Packer(Buffer* buf);
   Packer(const Packer&);
   Packer& operator =(const Packer&);
 
@@ -46,6 +45,7 @@ private:
   static int finalizer(lua_State* L);
 
 public:
+  Packer(Buffer* buf);
   ~Packer();
 
   /**

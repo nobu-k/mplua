@@ -32,7 +32,6 @@ class Feeder;
 
 class Unpacker {
 private:
-  Unpacker();
   Unpacker(const Unpacker&);
   Unpacker& operator =(const Unpacker&);
 
@@ -45,6 +44,7 @@ private:
   static int finalizer(lua_State* L);
 
 public:
+  Unpacker();
   ~Unpacker();
 
   /**

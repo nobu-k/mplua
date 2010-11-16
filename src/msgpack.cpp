@@ -89,6 +89,10 @@ int packArray(lua_State* L) {
   return 1;
 }
 
+int unpack(lua_State* L) {
+  
+}
+
 const char* const MpLuaPkgName = "msgpack";
 const struct luaL_Reg MpLuaLib[] = {
   {"Packer", &createPacker},
