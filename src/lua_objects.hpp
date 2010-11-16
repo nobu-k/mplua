@@ -52,6 +52,32 @@ public:
     }
   }
 
+  template<typename Packer>
+  void packTable(Packer& pk) const {
+    int n = lua_gettop(L);
+    for (int i = arg_base_; i <= n; i++) {
+      int t = lua_type(L, i);
+      if (t != LUA_TTABLE) {
+        luaL_error(L, "Arguments must be tables.");
+        return;
+      }
+      packTableAsTable(pk, i);
+    }
+  }
+
+  template<typename Packer>
+  void packArray(Packer& pk) const {
+    int n = lua_gettop(L);
+    for (int i = arg_base_; i <= n; i++) {
+      int t = lua_type(L, i);
+      if (t != LUA_TTABLE) {
+        luaL_error(L, "Arguments must be tables.");
+        return;
+      }
+      packTableAsArray(pk, i);
+    }
+  }
+
   void msgpack_unpack(const msgpack::object& msg);
 
 private:

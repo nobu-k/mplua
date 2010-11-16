@@ -18,6 +18,7 @@
 
 #include <lua.hpp>
 
+#include "lua_objects.hpp"
 #include "packer.hpp"
 #include "unpacker.hpp"
 
@@ -47,9 +48,53 @@ int createUnpacker(lua_State* L) {
 }
 
 namespace {
+// TODO: Modify these function to catch std::exception when
+// fixing 'luaL_error with C++' problem.
+/**
+ * @brief pack function which is provided as a module function.
+ */
+int pack(lua_State* L) {
+  sbuffer buffer;
+  packer<sbuffer> pk(&buffer);
+  LuaObjects obj(L, 1);
+
+  obj.msgpack_pack(pk);
+  lua_pushlstring(L, buffer.data(), buffer.size());
+  return 1;
+}
+
+/**
+ * @brief packTable function which is provided as a module function.
+ */
+int packTable(lua_State* L) {
+  sbuffer buffer;
+  packer<sbuffer> pk(&buffer);
+  LuaObjects obj(L, 1);
+
+  obj.packTable(pk);
+  lua_pushlstring(L, buffer.data(), buffer.size());
+  return 1;
+}
+
+/**
+ * @brief packArray function which is provided as a module function.
+ */
+int packArray(lua_State* L) {
+  sbuffer buffer;
+  packer<sbuffer> pk(&buffer);
+  LuaObjects obj(L, 1);
+
+  obj.packArray(pk);
+  lua_pushlstring(L, buffer.data(), buffer.size());
+  return 1;
+}
+
 const char* const MpLuaPkgName = "msgpack";
 const struct luaL_Reg MpLuaLib[] = {
   {"Packer", &createPacker},
+  {"pack", &pack},
+  {"packTable", &packTable},
+  {"packArray", &packArray},
   {"Unpacker", &createUnpacker},
   {NULL, NULL}
 };
