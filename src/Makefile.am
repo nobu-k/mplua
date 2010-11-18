@@ -1,8 +1,10 @@
-pkglibdir = $(LUA_CMOD_DIR)
+lib_LTLIBRARIES = libmsgpack-lua.la
 
-pkglib_LTLIBRARIES = msgpack.la
+libmsgpack_lua_la_includedir = $(includedir)/msgpack/lua
+libmsgpack_lua_la_include_HEADERS = \
+  lua_objects.hpp
 
-msgpack_la_SOURCES = \
+libmsgpack_lua_la_SOURCES = \
   msgpack.cpp \
   lua_objects.hpp \
   lua_objects.cpp \
@@ -12,11 +14,14 @@ msgpack_la_SOURCES = \
   packer_impl.cpp \
   unpacker.hpp \
   unpacker.cpp
-msgpack_la_CXXFLAGS = \
+libmsgpack_lua_la_CXXFLAGS = \
   $(LUA_CFLAGS)
-msgpack_la_LIBADD = \
+libmsgpack_lua_la_LIBADD = \
   $(LUA_LIBS) -lmsgpack
 
 # Because mplua.la does not start with "lib", module option is necessary.
-msgpack_la_LDFLAGS = \
+libmsgpack_lua_la_LDFLAGS = \
   -module
+
+install-exec-hook:
+	ln -f -s $(libdir)/libmsgpack-lua.so $(LUA_CMOD_DIR)/msgpack.so
