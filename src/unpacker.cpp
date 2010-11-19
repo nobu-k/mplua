@@ -35,8 +35,11 @@ int unpackerProxy(lua_State* L) {
 const char* const Unpacker::MetatableName = "msgpack.Unpacker";
 
 void Unpacker::registerUserdata(lua_State* L) {
-  luaL_newmetatable(L, msgpack::lua::Unpacker::MetatableName);
-  
+  if (luaL_newmetatable(L, Unpacker::MetatableName) == 0) {
+    lua_pop(L, 1);
+    return; // already created
+  }
+
   // metatable.__index = metatable
   lua_pushvalue(L, -1);
   lua_setfield(L, -2, "__index");
