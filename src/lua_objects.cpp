@@ -28,6 +28,10 @@ LuaObjects::LuaObjects(lua_State* L, int arg_base, bool pack_as_array)
 void LuaObjects::msgpack_unpack(const msgpack::object& msg) {
   namespace type = msgpack::type;
   switch (msg.type) {
+  case type::NIL:
+    lua_pushnil(L);
+    break;
+
   case type::BOOLEAN:
     lua_pushboolean(L, msg.via.boolean);
     break;
@@ -59,7 +63,6 @@ void LuaObjects::msgpack_unpack(const msgpack::object& msg) {
     unpackTable(msg.via.map);
     break;
 
-  case type::NIL:
   default:
     luaL_error(L, "invalid type for unpack: %d", msg.type);
     return;
